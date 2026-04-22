@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import type {
@@ -101,6 +101,13 @@ function formatPrice(raw: string): string {
 
 export default function Home() {
   const router = useRouter();
+
+  // Clean up any Supabase error hash fragments in the URL (e.g. otp_expired)
+  useEffect(() => {
+    if (window.location.hash.includes('error=')) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, []);
 
   async function handleLogout() {
     const supabase = createClient();

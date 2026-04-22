@@ -1,16 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get('error');
   const [tab, setTab]           = useState<'signin' | 'signup'>('signin');
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading]   = useState(false);
   const [message, setMessage]   = useState<{ type: 'error' | 'success'; text: string } | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (urlError) setMessage({ type: 'error', text: urlError });
+  }, [urlError]);
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
