@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 import type {
   RichGeneratedCopy,
   MultiCarReelProps,
@@ -98,6 +100,15 @@ function formatPrice(raw: string): string {
 // ─── main component ───────────────────────────────────────────────────────────
 
 export default function Home() {
+  const supabase = createClient();
+  const router   = useRouter();
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  }
+
   // Global state
   const [dealership, setDealership]             = useState('');
   const [selectedPresetId, setSelectedPresetId] = useState<PresetId>('clean-dealer');
@@ -314,7 +325,13 @@ export default function Home() {
       {/* ── Header ── */}
       <header className="border-b border-zinc-800 px-6 py-4 flex items-center gap-3">
         <div className="text-2xl font-black text-yellow-400 tracking-tight">CAR REELS</div>
-        <div className="text-zinc-500 text-sm">AI-powered dealership reels for TikTok & Instagram</div>
+        <div className="text-zinc-500 text-sm flex-1">AI-powered dealership reels for TikTok & Instagram</div>
+        <button
+          onClick={handleLogout}
+          className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors px-3 py-1.5 rounded-lg border border-zinc-800 hover:border-zinc-600"
+        >
+          Sign out
+        </button>
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
