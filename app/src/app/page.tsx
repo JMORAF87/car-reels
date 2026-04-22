@@ -100,10 +100,10 @@ function formatPrice(raw: string): string {
 // ─── main component ───────────────────────────────────────────────────────────
 
 export default function Home() {
-  const supabase = createClient();
-  const router   = useRouter();
+  const router = useRouter();
 
   async function handleLogout() {
+    const supabase = createClient();
     await supabase.auth.signOut();
     router.push('/login');
     router.refresh();

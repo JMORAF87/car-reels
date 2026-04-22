@@ -1,24 +1,23 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [tab, setTab]         = useState<'signin' | 'signup'>('signin');
-  const [email, setEmail]     = useState('');
+  const [tab, setTab]           = useState<'signin' | 'signup'>('signin');
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
+  const [loading, setLoading]   = useState(false);
+  const [message, setMessage]   = useState<{ type: 'error' | 'success'; text: string } | null>(null);
   const router = useRouter();
-  const supabase = createClient();
 
+  // createClient() is called inside handlers only — never during render/prerender
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
+    const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setMessage({ type: 'error', text: error.message });
@@ -33,6 +32,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
+    const supabase = createClient();
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -49,16 +49,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        {/* Logo / title */}
         <div className="text-center mb-8">
           <div className="text-4xl mb-3">🎬</div>
           <h1 className="text-2xl font-bold text-white">Car Reels Creator</h1>
           <p className="text-zinc-400 text-sm mt-1">AI-powered dealership reels</p>
         </div>
 
-        {/* Card */}
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
-          {/* Tabs */}
           <div className="flex rounded-lg bg-zinc-800 p-1 mb-6">
             {(['signin', 'signup'] as const).map((t) => (
               <button
