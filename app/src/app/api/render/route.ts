@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { bundle } from '@remotion/bundler';
 import { renderMedia, selectComposition } from '@remotion/renderer';
 import path from 'path';
+import { mkdir } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
 import type { MultiCarReelProps } from '@/lib/types';
+import { uploadRenderedVideo } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300;
@@ -13,7 +15,7 @@ export async function POST(req: NextRequest) {
     const props = await req.json() as MultiCarReelProps;
 
     const port = process.env.PORT || 3000;
-    const baseUrl = `http://localhost:${port}`;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${port}`;
 
     const inputProps: MultiCarReelProps = {
       ...props,
@@ -40,7 +42,10 @@ export async function POST(req: NextRequest) {
     });
 
     const outputFilename = `reel-${uuidv4()}.mp4`;
-    const outputPath = path.join(process.cwd(), 'public/output', outputFilename);
+    // Use /tmp on cloud (writable on all platforms), public/output locally
+    const tmpDir = process.env.SUPABASE_URL ? '/tmp' : path.join(process.cwd(), 'public/output');
+    await mkdir(tmpDir, { recursive: true });
+    const outputPath = path.join(tmpDir, outputFilename);
 
     await renderMedia({
       composition,
@@ -50,7 +55,9 @@ export async function POST(req: NextRequest) {
       inputProps: remotionProps,
     });
 
-    return NextResponse.json({ url: `/output/${outputFilename}` });
+    const url = await uploadRenderedVideo(outputPath, outputFilename);
+
+    return NextResponse.json({ url });
   } catch (err) {
     console.error(err);
     const message = err instanceof Error ? err.message : 'Render failed';

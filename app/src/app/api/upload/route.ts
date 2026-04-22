@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { uploadImageBuffer } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 
@@ -21,9 +20,8 @@ export async function POST(req: NextRequest) {
       const buffer = Buffer.from(bytes);
       const ext = file.name.split('.').pop() || 'jpg';
       const filename = `${uuidv4()}.${ext}`;
-      const filepath = path.join(process.cwd(), 'public/uploads', filename);
-      await writeFile(filepath, buffer);
-      urls.push(`/uploads/${filename}`);
+      const url = await uploadImageBuffer(buffer, filename, file.type || 'image/jpeg');
+      urls.push(url);
     }
 
     return NextResponse.json({ urls });
