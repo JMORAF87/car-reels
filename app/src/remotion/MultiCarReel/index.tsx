@@ -163,7 +163,7 @@ const PhotoSlide: React.FC<{
             width: '116%', height: '116%',
             objectFit: 'cover',
             objectPosition: 'center',
-            filter: 'blur(28px) brightness(0.58) saturate(1.2)',
+            filter: 'blur(28px) brightness(0.72) saturate(1.3)',
             ...bgMotion(motionPreset, progress, motionScaleBg),
           }}
         />
@@ -420,9 +420,7 @@ export const MultiCarReel: React.FC<MultiCarReelProps> = ({
               const feats = vehicle?.features ?? [];
               const perSlide = 2;
               const offset = (currentSlide - 1) * perSlide;
-              const shown = feats.length > 0
-                ? [feats[offset % feats.length], feats[(offset + 1) % feats.length]].filter(Boolean)
-                : [];
+              const shown = [feats[offset], feats[offset + 1]].filter(Boolean);
               return (
                 <div>
                   {shown.map((f, i) => (
