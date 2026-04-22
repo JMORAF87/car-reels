@@ -53,9 +53,13 @@ export async function POST(req: NextRequest) {
       codec: 'h264',
       outputLocation: outputPath,
       inputProps: remotionProps,
-      // Prevent OOM on constrained cloud servers (Railway default: 512 MB)
+      // Prevent OOM on Railway's 512 MB limit
       concurrency: 1,
       x264Preset: 'ultrafast',
+      // Cap x264 threads — auto-detection picks up Railway's shared CPUs (60+)
+      // causing OOM. Insert -threads:v 2 before the output file (always last arg).
+      ffmpegOverride: ({ args }) =>
+        [...args.slice(0, -1), '-threads:v', '2', args[args.length - 1]],
     });
 
     const url = await uploadRenderedVideo(outputPath, outputFilename);
