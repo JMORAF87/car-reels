@@ -33,6 +33,14 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+# NEXT_PUBLIC_* vars are inlined at build time — declare as build args so
+# Railway passes them in during `npm run build` via --build-arg
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 RUN npm run build
 
 EXPOSE 3000
