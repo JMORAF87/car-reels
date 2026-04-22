@@ -793,6 +793,8 @@ export default function Home() {
                   <a
                     href={videoUrl}
                     download={downloadName}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={`${btn('gold')} w-full py-3 text-base text-center block`}
                   >
                     Download MP4
