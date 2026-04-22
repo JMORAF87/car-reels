@@ -12,38 +12,47 @@ export default function LoginPage() {
   const [message, setMessage]   = useState<{ type: 'error' | 'success'; text: string } | null>(null);
   const router = useRouter();
 
-  // createClient() is called inside handlers only — never during render/prerender
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setMessage({ type: 'error', text: error.message });
-    } else {
-      router.push('/');
-      router.refresh();
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setMessage({ type: 'error', text: error.message });
+      } else {
+        router.push('/');
+        router.refresh();
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Sign in failed. Check your connection.' });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
-    });
-    if (error) {
-      setMessage({ type: 'error', text: error.message });
-    } else {
-      setMessage({ type: 'success', text: 'Check your email for a confirmation link to activate your account.' });
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      });
+      if (error) {
+        setMessage({ type: 'error', text: error.message });
+      } else {
+        setMessage({ type: 'success', text: 'Account created! Check your email for a confirmation link.' });
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Sign up failed. Check your connection.' });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
