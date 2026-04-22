@@ -56,16 +56,6 @@ export async function POST(req: NextRequest) {
       // Prevent OOM on constrained cloud servers (Railway default: 512 MB)
       concurrency: 1,
       x264Preset: 'ultrafast',
-      ffmpegOverride: ({ args }) => {
-        // Replace any existing -threads value with 2, or inject it
-        const idx = args.indexOf('-threads');
-        if (idx !== -1) {
-          const out = [...args];
-          out[idx + 1] = '2';
-          return out;
-        }
-        return [args[0], '-threads', '2', ...args.slice(1)];
-      },
     });
 
     const url = await uploadRenderedVideo(outputPath, outputFilename);
