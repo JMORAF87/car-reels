@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+app/.next/
+app/out/
+
+# Remotion render output
+app/public/output/
+
+# Uploaded user files
+app/public/uploads/
+
+# Environment variables
+app/.env
+app/.env.local
+app/.env*.local
+
+# TypeScript build info
+*.tsbuildinfo
+
+# OS
+.DS_Store
+
+# Logs
+*.log
