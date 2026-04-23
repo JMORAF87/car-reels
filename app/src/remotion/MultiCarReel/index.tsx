@@ -257,7 +257,7 @@ export const MultiCarReel: React.FC<MultiCarReelProps> = ({
   for (let i = 0; i < currentVehicleIdx; i++) globalSlideIndex += Math.max(vehicles[i].images.length, 1);
 
   const lastV       = vehicles[vehicles.length - 1];
-  const ctaBgImg    = lastV?.images[lastV.images.length - 1] ?? lastV?.images[0];
+  const ctaBgImg    = lastV?.images[0];
   const ctaSlideIdx = vehicles.reduce((sum, v) => sum + Math.max(v.images.length, 1), 0);
 
   return (
