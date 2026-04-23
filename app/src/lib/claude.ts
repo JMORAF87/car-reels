@@ -23,7 +23,6 @@ export async function generateCarCopy(req: GenerateRequest): Promise<RichGenerat
   const preset = PRESETS[req.presetId];
   const formattedPrice = formatPriceForPrompt(req.price);
   const location = req.location?.trim() || '';
-  const dmKeyword = req.dmKeyword?.trim() || '';
   const salesperson = req.salespersonLabel?.trim() || '';
 
   const prompt = `You are an expert social media strategist for car dealerships creating high-converting content for Instagram Reels and TikTok.
@@ -64,8 +63,8 @@ Return ONLY valid JSON with exactly these keys:
     "informative": "hook sentence + 4–5 sentences covering vehicle details, features, value, CTA (NO hashtags — they are separate)"
   },
   "hashtags": {
-    "local": "15 geo-targeted hashtags for ${location || 'the local area'} — EVERY tag must start with # (space-separated)",
-    "niche": "15 hashtags targeting vehicle enthusiasts, brand fans, and niche communities — EVERY tag must start with # (space-separated)"
+    "local": "5 geo-targeted hashtags for ${location || 'the local area'} — EVERY tag must start with # (space-separated)",
+    "niche": "5 hashtags targeting vehicle enthusiasts, brand fans, and niche communities — EVERY tag must start with # (space-separated)"
   },
   "title": "SEO video title max 80 chars"
 }`;

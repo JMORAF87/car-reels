@@ -190,7 +190,7 @@ const PhotoSlide: React.FC<{
 // ─── main composition ─────────────────────────────────────────────────────────
 
 export const MultiCarReel: React.FC<MultiCarReelProps> = ({
-  vehicles, cta, hashtags, dealership,
+  vehicles, cta, dealership,
   theme, transitionPackId, visualStyle,
   ctaNote, salespersonLabel, dmKeyword,
 }) => {
@@ -205,6 +205,11 @@ export const MultiCarReel: React.FC<MultiCarReelProps> = ({
   const layout   = computeLayout(vehicles);
   const ctaStart = durationInFrames - CTA_FRAMES;
   const isCta    = frame >= ctaStart;
+
+  // Salesperson name in CTA text? Don't repeat it in the top strip.
+  const ctaHasSalesperson = salespersonLabel
+    ? cta.toLowerCase().includes(salespersonLabel.split(' ')[0].toLowerCase())
+    : false;
 
   // Determine current vehicle and slide
   let currentVehicleIdx = vehicles.length - 1;
@@ -311,20 +316,65 @@ export const MultiCarReel: React.FC<MultiCarReelProps> = ({
         }}
       />
 
-      {/* Dealership name — top left */}
-      <AbsoluteFill style={{ padding: '56px 52px', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-        <div style={{
-          fontFamily: oswald,
-          color: '#fff',
-          fontSize: 26,
-          fontWeight: 700,
-          letterSpacing: 4,
-          textTransform: 'uppercase',
-          textShadow: '0 2px 12px rgba(0,0,0,0.9)',
+      {/* Dealership name — top left (car slides only) */}
+      {!isCta && (
+        <AbsoluteFill style={{ padding: '56px 52px', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+          <div style={{
+            fontFamily: oswald,
+            color: '#fff',
+            fontSize: 26,
+            fontWeight: 700,
+            letterSpacing: 4,
+            textTransform: 'uppercase',
+            textShadow: '0 2px 12px rgba(0,0,0,0.9)',
+          }}>
+            {dealership}
+          </div>
+        </AbsoluteFill>
+      )}
+
+      {/* CTA slide — top strip: salesperson (if not already in CTA) + dealership */}
+      {isCta && (
+        <AbsoluteFill style={{
+          padding: '64px 52px',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          flexDirection: 'column',
+          gap: 10,
+          opacity: textOpacity,
         }}>
-          {dealership}
-        </div>
-      </AbsoluteFill>
+          {salespersonLabel && !ctaHasSalesperson && (
+            <div style={{
+              fontFamily: oswald,
+              color: primary,
+              fontSize: 42,
+              fontWeight: 700,
+              letterSpacing: 2,
+              textTransform: 'uppercase',
+              textShadow: '0 3px 18px rgba(0,0,0,0.99)',
+              opacity: opacityMod,
+            }}>
+              {salespersonLabel}
+            </div>
+          )}
+          <div style={{
+            fontFamily: oswald,
+            display: 'inline-block',
+            background: 'rgba(255,255,255,0.12)',
+            color: '#fff',
+            padding: '6px 22px',
+            borderRadius: 100,
+            fontSize: 20,
+            fontWeight: 600,
+            letterSpacing: 3,
+            textTransform: 'uppercase',
+            border: '1px solid rgba(255,255,255,0.22)',
+            textShadow: '0 2px 10px rgba(0,0,0,0.9)',
+          }}>
+            {dealership}
+          </div>
+        </AbsoluteFill>
+      )}
 
       {/* Vehicle counter — top right */}
       {vehicles.length > 1 && !isCta && (
@@ -368,7 +418,7 @@ export const MultiCarReel: React.FC<MultiCarReelProps> = ({
       {/* Bottom text overlay */}
       <AbsoluteFill
         style={{
-          padding: '0 52px 96px',
+          padding: '0 52px 260px',
           justifyContent: 'flex-end',
           opacity: textOpacity,
           transform: `translateY(${textY}px)`,
@@ -451,86 +501,39 @@ export const MultiCarReel: React.FC<MultiCarReelProps> = ({
             })()}
           </div>
         ) : (
-          /* CTA / outro slide */
+          /* CTA / outro slide — bottom section */
           <div style={{ textAlign: 'center', width: '100%' }}>
-            {vehicles.length > 1 && (
-              <div style={{
-                fontFamily: inter,
-                color: 'rgba(255,255,255,0.65)',
-                fontSize: 23,
-                fontWeight: 500,
-                marginBottom: 16,
-                letterSpacing: 0.5,
-              }}>
-                {vehicles.map((v) => `${v.title} · ${formatPrice(v.price)}`).join('   ')}
-              </div>
-            )}
 
-            {/* Salesperson — hero name at top of outro */}
-            {salespersonLabel && (
-              <div style={{
-                fontFamily: oswald,
-                color: primary,
-                fontSize: 46,
-                fontWeight: 700,
-                letterSpacing: 1.5,
-                textTransform: 'uppercase',
-                textShadow: `0 3px 18px rgba(0,0,0,0.99)`,
-                marginBottom: 10,
-                opacity: opacityMod,
-              }}>
-                {salespersonLabel}
-              </div>
-            )}
-
-            {/* Dealership — small frosted badge */}
-            <div style={{
-              fontFamily: oswald,
-              display: 'inline-block',
-              background: 'rgba(255,255,255,0.12)',
-              color: '#fff',
-              padding: '5px 20px',
-              borderRadius: 100,
-              fontSize: 17,
-              fontWeight: 600,
-              letterSpacing: 3,
-              textTransform: 'uppercase',
-              marginBottom: 18,
-              border: '1px solid rgba(255,255,255,0.2)',
-            }}>
-              {dealership}
-            </div>
-
-            {/* CTA text */}
+            {/* CTA text — biggest element */}
             <div style={{
               fontFamily: oswald,
               color: '#fff',
-              fontSize: 46,
+              fontSize: 62,
               fontWeight: 700,
-              lineHeight: 1.15,
+              lineHeight: 1.1,
               textTransform: 'uppercase',
               letterSpacing: 1,
-              marginBottom: 20,
-              textShadow: '0 4px 20px rgba(0,0,0,0.99)',
+              marginBottom: 24,
+              textShadow: '0 4px 24px rgba(0,0,0,0.99)',
             }}>
               {cta}
             </div>
 
-            {/* DM keyword — big highlighted pill */}
+            {/* DM keyword — large pill */}
             {dmKeyword && (
-              <div style={{ marginBottom: 18 }}>
+              <div style={{ marginBottom: 22 }}>
                 <span style={{
                   fontFamily: oswald,
                   display: 'inline-block',
                   background: primary,
                   color: textOnPrimary,
-                  fontSize: 36,
+                  fontSize: 44,
                   fontWeight: 700,
                   letterSpacing: 2,
                   textTransform: 'uppercase',
-                  padding: '10px 36px',
+                  padding: '13px 44px',
                   borderRadius: 100,
-                  boxShadow: `0 6px 28px ${primary}77`,
+                  boxShadow: `0 6px 32px ${primary}77`,
                   opacity: opacityMod,
                 }}>
                   DM &ldquo;{dmKeyword}&rdquo;
@@ -538,30 +541,20 @@ export const MultiCarReel: React.FC<MultiCarReelProps> = ({
               </div>
             )}
 
-            {/* CTA note */}
+            {/* CTA note — bigger and fully legible */}
             {ctaNote && (
               <div style={{
                 fontFamily: inter,
-                color: 'rgba(255,255,255,0.75)',
-                fontSize: 22,
+                color: 'rgba(255,255,255,0.92)',
+                fontSize: 28,
                 fontWeight: 500,
-                marginBottom: 18,
-                letterSpacing: 0.5,
-                textShadow: '0 2px 10px rgba(0,0,0,0.9)',
+                lineHeight: 1.4,
+                letterSpacing: 0.3,
+                textShadow: '0 2px 12px rgba(0,0,0,0.95)',
               }}>
                 {ctaNote}
               </div>
             )}
-
-            <div style={{
-              fontFamily: inter,
-              color: 'rgba(255,255,255,0.35)',
-              fontSize: 17,
-              fontWeight: 400,
-              lineHeight: 2.0,
-            }}>
-              {hashtags}
-            </div>
           </div>
         )}
       </AbsoluteFill>
