@@ -125,8 +125,8 @@ export interface RichGeneratedCopy {
   selectedHook: number;
   ctas: string[];            // 3 options
   selectedCta: number;
-  features: string[];        // 6 callouts
-  activeFeatures: boolean[]; // which of the 6 show in video (max 4)
+  features: string[];        // 10 callouts
+  activeFeatures: boolean[]; // which features show in video (up to 6 active)
   captions: {
     short: string;
     balanced: string;
@@ -144,8 +144,7 @@ export interface RichGeneratedCopy {
 export function getSelectedCopy(rich: RichGeneratedCopy) {
   const activeCount = rich.activeFeatures.filter(Boolean).length;
   const features = rich.features.filter((_, i) => rich.activeFeatures[i]);
-  // fallback: if user deselected everything, use first 4
-  const videoFeatures = activeCount > 0 ? features.slice(0, 4) : rich.features.slice(0, 4);
+  const videoFeatures = activeCount > 0 ? features : rich.features.slice(0, 6);
   return {
     hook: rich.hooks[rich.selectedHook] ?? rich.hooks[0] ?? '',
     cta:  rich.ctas[rich.selectedCta]   ?? rich.ctas[0]  ?? '',

@@ -273,7 +273,7 @@ export default function Home() {
             hook:     c.hooks[c.selectedHook] ?? c.hooks[0] ?? '',
             title:    `${v.car.year} ${v.car.make} ${v.car.model}`,
             price:    v.car.price,
-            features: activeFeats.length > 0 ? activeFeats : c.features,
+            features: activeFeats.length > 0 ? activeFeats : c.features.slice(0, 6),
           };
         }),
         cta:       firstCopy.ctas[firstCopy.selectedCta] ?? firstCopy.ctas[0] ?? '',

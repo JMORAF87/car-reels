@@ -57,15 +57,15 @@ Return ONLY valid JSON with exactly these keys:
 {
   "hooks": ["hook 1", "hook 2", "hook 3", "hook 4", "hook 5"],
   "ctas": ["cta 1", "cta 2", "cta 3"],
-  "features": ["feature 1", "feature 2", "feature 3", "feature 4", "feature 5", "feature 6"],
+  "features": ["feature 1", "feature 2", "feature 3", "feature 4", "feature 5", "feature 6", "feature 7", "feature 8", "feature 9", "feature 10"],
   "captions": {
-    "short": "hook sentence + 1 supporting sentence + CTA sentence + blank line + hashtags",
-    "balanced": "hook sentence + 2–3 engaging sentences about the vehicle + CTA sentence + blank line + hashtags",
-    "informative": "hook sentence + 4–5 sentences covering vehicle details, features, value, CTA + blank line + hashtags"
+    "short": "hook sentence + 1 supporting sentence + CTA sentence (NO hashtags — they are separate)",
+    "balanced": "hook sentence + 2–3 engaging sentences about the vehicle + CTA sentence (NO hashtags — they are separate)",
+    "informative": "hook sentence + 4–5 sentences covering vehicle details, features, value, CTA (NO hashtags — they are separate)"
   },
   "hashtags": {
-    "local": "15 geo-targeted hashtags for ${location || 'the local area'} (space-separated)",
-    "niche": "15 hashtags targeting vehicle enthusiasts, brand fans, and niche communities (space-separated)"
+    "local": "15 geo-targeted hashtags for ${location || 'the local area'} — EVERY tag must start with # (space-separated)",
+    "niche": "15 hashtags targeting vehicle enthusiasts, brand fans, and niche communities — EVERY tag must start with # (space-separated)"
   },
   "title": "SEO video title max 80 chars"
 }`;
@@ -91,13 +91,19 @@ Return ONLY valid JSON with exactly these keys:
 
   const features = raw.features ?? [];
 
+  function normalizeHashtags(raw: string): string {
+    return (raw ?? '').split(/\s+/).filter(Boolean).map((tag) =>
+      tag.startsWith('#') ? tag : `#${tag}`
+    ).join(' ');
+  }
+
   return {
     hooks:         raw.hooks ?? [],
     selectedHook:  0,
     ctas:          raw.ctas ?? [],
     selectedCta:   0,
     features,
-    activeFeatures: features.map((_, i) => i < 4),
+    activeFeatures: features.map((_, i) => i < 6),
     captions: {
       short:       raw.captions?.short ?? '',
       balanced:    raw.captions?.balanced ?? '',
@@ -105,8 +111,8 @@ Return ONLY valid JSON with exactly these keys:
     },
     captionType: 'balanced',
     hashtags: {
-      local: raw.hashtags?.local ?? '',
-      niche: raw.hashtags?.niche ?? '',
+      local: normalizeHashtags(raw.hashtags?.local ?? ''),
+      niche: normalizeHashtags(raw.hashtags?.niche ?? ''),
     },
     hashtagSet: 'local',
     title: raw.title ?? '',

@@ -49,12 +49,12 @@ function fgMotion(m: MotionPreset, p: number, scale: number): React.CSSPropertie
 }
 
 function gradientOverlay(style: GradientStyle, isCta: boolean): string {
-  if (isCta) return 'linear-gradient(180deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,.2) 28%,rgba(0,0,0,.45) 58%,rgba(0,0,0,.88) 100%)';
+  if (isCta) return 'linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.08) 28%,rgba(0,0,0,.28) 58%,rgba(0,0,0,.72) 100%)';
   switch (style) {
-    case 'cinematic': return 'linear-gradient(180deg,rgba(0,0,0,.28) 0%,transparent 18%,transparent 38%,rgba(0,0,0,.40) 60%,rgba(0,0,0,.82) 100%)';
-    case 'minimal':   return 'linear-gradient(180deg,rgba(0,0,0,.10) 0%,transparent 24%,transparent 64%,rgba(0,0,0,.68) 100%)';
-    case 'luxury':    return 'linear-gradient(180deg,rgba(0,0,0,.22) 0%,transparent 16%,transparent 50%,rgba(0,0,0,.48) 72%,rgba(0,0,0,.86) 100%)';
-    case 'bold':      return 'linear-gradient(180deg,rgba(0,0,0,.42) 0%,transparent 16%,transparent 30%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.90) 100%)';
+    case 'cinematic': return 'linear-gradient(180deg,rgba(0,0,0,.10) 0%,transparent 20%,transparent 45%,rgba(0,0,0,.22) 65%,rgba(0,0,0,.60) 100%)';
+    case 'minimal':   return 'linear-gradient(180deg,rgba(0,0,0,.05) 0%,transparent 25%,transparent 65%,rgba(0,0,0,.48) 100%)';
+    case 'luxury':    return 'linear-gradient(180deg,rgba(0,0,0,.10) 0%,transparent 18%,transparent 52%,rgba(0,0,0,.30) 72%,rgba(0,0,0,.65) 100%)';
+    case 'bold':      return 'linear-gradient(180deg,rgba(0,0,0,.18) 0%,transparent 18%,transparent 35%,rgba(0,0,0,.38) 58%,rgba(0,0,0,.72) 100%)';
   }
 }
 
@@ -163,7 +163,7 @@ const PhotoSlide: React.FC<{
             width: '116%', height: '116%',
             objectFit: 'cover',
             objectPosition: 'center',
-            filter: 'blur(28px) brightness(0.72) saturate(1.3)',
+            filter: 'blur(28px) brightness(0.88) saturate(1.2)',
             ...bgMotion(motionPreset, progress, motionScaleBg),
           }}
         />
