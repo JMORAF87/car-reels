@@ -7,7 +7,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 function LoginForm() {
   const searchParams = useSearchParams();
   const urlError = searchParams.get('error');
-  const [tab, setTab]           = useState<'signin' | 'signup'>('signin');
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading]   = useState(false);
@@ -38,29 +37,6 @@ function LoginForm() {
     }
   }
 
-  async function handleSignUp(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setMessage(null);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
-      });
-      if (error) {
-        setMessage({ type: 'error', text: error.message });
-      } else {
-        setMessage({ type: 'success', text: 'Account created! Check your email for a confirmation link.' });
-      }
-    } catch (err) {
-      setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Sign up failed. Check your connection.' });
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
@@ -71,23 +47,7 @@ function LoginForm() {
         </div>
 
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
-          <div className="flex rounded-lg bg-zinc-800 p-1 mb-6">
-            {(['signin', 'signup'] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => { setTab(t); setMessage(null); }}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-                  tab === t
-                    ? 'bg-zinc-950 text-white shadow'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                {t === 'signin' ? 'Sign In' : 'Create Account'}
-              </button>
-            ))}
-          </div>
-
-          <form onSubmit={tab === 'signin' ? handleSignIn : handleSignUp} className="space-y-4">
+          <form onSubmit={handleSignIn} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-zinc-400 mb-1.5">Email</label>
               <input
@@ -127,11 +87,13 @@ function LoginForm() {
               disabled={loading}
               className="w-full bg-yellow-400 hover:bg-yellow-300 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-950 font-semibold py-2.5 rounded-lg text-sm transition-colors"
             >
-              {loading
-                ? (tab === 'signin' ? 'Signing in…' : 'Creating account…')
-                : (tab === 'signin' ? 'Sign In' : 'Create Account')}
+              {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
+
+          <p className="text-center text-zinc-600 text-xs mt-5">
+            Access is by invitation only.
+          </p>
         </div>
       </div>
     </div>

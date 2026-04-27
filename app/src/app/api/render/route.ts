@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { bundle } from '@remotion/bundler';
 import { renderMedia, selectComposition } from '@remotion/renderer';
+import { createClient as createServerClient } from '@/lib/supabase/server';
+import { createClient as createAdminClient } from '@supabase/supabase-js';
 import path from 'path';
 import { mkdir } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,6 +13,49 @@ export const runtime = 'nodejs';
 export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
+  // ── 1. Verify auth session ────────────────────────────────────────────────
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+  }
+
+  // ── 2. Check render permission (skipped in local dev without service key) ─
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  let renderQuota: number | null = null; // null = unlimited
+
+  if (supabaseUrl && serviceKey) {
+    const admin = createAdminClient(supabaseUrl, serviceKey);
+    const { data: access } = await admin
+      .from('user_access')
+      .select('can_render, render_quota')
+      .eq('id', user.id)
+      .single();
+
+    if (!access) {
+      return NextResponse.json(
+        { error: 'Access not approved. Contact support to request access.' },
+        { status: 403 }
+      );
+    }
+    if (!access.can_render) {
+      return NextResponse.json(
+        { error: 'Render access not granted for your account. Contact support.' },
+        { status: 403 }
+      );
+    }
+    if (access.render_quota !== null && access.render_quota <= 0) {
+      return NextResponse.json(
+        { error: 'Render quota exhausted. Contact support to add more.' },
+        { status: 403 }
+      );
+    }
+    renderQuota = access.render_quota; // preserve for post-render decrement
+  }
+
+  // ── 3. Render ─────────────────────────────────────────────────────────────
   try {
     const props = await req.json() as MultiCarReelProps;
 
@@ -63,6 +108,15 @@ export async function POST(req: NextRequest) {
     });
 
     const url = await uploadRenderedVideo(outputPath, outputFilename);
+
+    // ── 4. Decrement quota only after a successful render ──────────────────
+    if (supabaseUrl && serviceKey && renderQuota !== null) {
+      const admin = createAdminClient(supabaseUrl, serviceKey);
+      await admin
+        .from('user_access')
+        .update({ render_quota: renderQuota - 1 })
+        .eq('id', user.id);
+    }
 
     return NextResponse.json({ url });
   } catch (err) {
