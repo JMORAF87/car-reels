@@ -20,9 +20,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   }
 
-  // ── 2. Check render permission (skipped in local dev without service key) ─
+  // ── 2. Check render permission ────────────────────────────────────────────
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const isLocalDev  = process.env.NODE_ENV === 'development';
+
+  // In production, missing config is a hard failure — never fail open.
+  if (!supabaseUrl || !serviceKey) {
+    if (!isLocalDev) {
+      return NextResponse.json(
+        { error: 'Server configuration error: access control unavailable.' },
+        { status: 500 }
+      );
+    }
+    // Local dev only: bypass user_access check when service key is absent.
+    console.warn('[render] Skipping user_access check — local dev, no service key.');
+  }
 
   let renderQuota: number | null = null; // null = unlimited
 
@@ -110,6 +123,9 @@ export async function POST(req: NextRequest) {
     const url = await uploadRenderedVideo(outputPath, outputFilename);
 
     // ── 4. Decrement quota only after a successful render ──────────────────
+    // TODO: this decrement is not atomic — concurrent renders for the same user
+    // could both pass the quota check and both decrement. Acceptable for now
+    // given low concurrency; fix with a DB function / .rpc() if needed later.
     if (supabaseUrl && serviceKey && renderQuota !== null) {
       const admin = createAdminClient(supabaseUrl, serviceKey);
       await admin
