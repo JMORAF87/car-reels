@@ -331,7 +331,14 @@ export default function Home() {
 
       {/* ── Header ── */}
       <header className="border-b border-zinc-800 px-6 py-4 flex items-center gap-3">
-        <div className="text-2xl font-black text-yellow-400 tracking-tight">CAR REELS</div>
+        <div className="flex items-center gap-2.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/car-reels-logo-icon.png" alt="Car Reels" style={{ height: 42, width: 42, borderRadius: 8 }} />
+          <span className="text-2xl font-black tracking-tight">
+            <span className="text-white">CAR </span>
+            <span style={{ color: '#0EC5BF' }}>REELS</span>
+          </span>
+        </div>
         <div className="text-zinc-500 text-sm flex-1">AI-powered dealership reels for TikTok & Instagram</div>
         <button
           onClick={handleLogout}
