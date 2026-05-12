@@ -42,16 +42,16 @@ const TEXT_COLORS = [
 // ─── style constants ──────────────────────────────────────────────────────────
 
 const field =
-  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-yellow-400 transition-colors';
+  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-[#26C4A2] transition-colors';
 
 const selectField =
-  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-yellow-400 transition-colors appearance-none cursor-pointer';
+  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#26C4A2] transition-colors appearance-none cursor-pointer';
 
 const card = 'bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4';
 
 function btn(color: 'gold' | 'zinc' | 'green') {
   const map = {
-    gold:  'bg-yellow-400 hover:bg-yellow-300 text-black font-bold',
+    gold:  'bg-[#26C4A2] hover:bg-[#1CAF8F] text-white font-bold',
     zinc:  'bg-zinc-700 hover:bg-zinc-600 text-white font-semibold',
     green: 'bg-emerald-500 hover:bg-emerald-400 text-white font-bold',
   };
@@ -61,7 +61,7 @@ function btn(color: 'gold' | 'zinc' | 'green') {
 function tabBtn(active: boolean) {
   return `px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
     active
-      ? 'bg-yellow-400 text-black'
+      ? 'bg-[#26C4A2] text-white'
       : 'bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700'
   }`;
 }
@@ -331,14 +331,8 @@ export default function Home() {
 
       {/* ── Header ── */}
       <header className="border-b border-zinc-800 px-6 py-4 flex items-center gap-3">
-        <div className="flex items-center gap-2.5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/car-reels-logo-icon.png" alt="Car Reels" style={{ height: 42, width: 42, borderRadius: 8 }} />
-          <span className="text-2xl font-black tracking-tight">
-            <span className="text-white">CAR </span>
-            <span style={{ color: '#0EC5BF' }}>REELS</span>
-          </span>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/car-reels-logo-transp.png" alt="Car Reels" style={{ height: 38, width: 'auto' }} />
         <div className="text-zinc-500 text-sm flex-1">AI-powered dealership reels for TikTok & Instagram</div>
         <button
           onClick={handleLogout}
@@ -352,7 +346,7 @@ export default function Home() {
 
         {/* ── 1. Style Preset ── */}
         <div className={card}>
-          <h2 className="text-base font-bold text-yellow-400 uppercase tracking-wider">Style Preset</h2>
+          <h2 className="text-base font-bold text-[#26C4A2] uppercase tracking-wider">Style Preset</h2>
           <p className="text-zinc-500 text-xs -mt-2">Choose your content style — sets tone, transitions, and typography automatically.</p>
           <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
             {PRESET_ORDER.map((id) => {
@@ -366,12 +360,12 @@ export default function Home() {
                   }}
                   className={`flex-shrink-0 w-36 text-left px-4 py-3 rounded-xl border transition-all ${
                     isActive
-                      ? 'border-yellow-400 bg-yellow-400/10'
+                      ? 'border-[#26C4A2] bg-[#26C4A2]/10'
                       : 'border-zinc-700 bg-zinc-800 hover:border-zinc-600'
                   }`}
                 >
                   <div className="text-2xl mb-1.5">{p.emoji}</div>
-                  <div className={`text-sm font-bold ${isActive ? 'text-yellow-400' : 'text-white'}`}>{p.name}</div>
+                  <div className={`text-sm font-bold ${isActive ? 'text-[#26C4A2]' : 'text-white'}`}>{p.name}</div>
                   <div className="text-xs text-zinc-500 mt-0.5 leading-tight">{p.description}</div>
                 </button>
               );
@@ -381,7 +375,7 @@ export default function Home() {
 
         {/* ── 2. Dealership + Brand ── */}
         <div className={card}>
-          <h2 className="text-base font-bold text-yellow-400 uppercase tracking-wider">Dealership & Brand</h2>
+          <h2 className="text-base font-bold text-[#26C4A2] uppercase tracking-wider">Dealership & Brand</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -442,7 +436,7 @@ export default function Home() {
               <div className="flex items-center gap-2 ml-auto">
                 <div className="w-6 h-6 rounded border border-zinc-600 flex-shrink-0" style={{ background: textColor }} />
                 <input
-                  className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-white font-mono text-xs w-24 focus:outline-none focus:border-yellow-400"
+                  className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-white font-mono text-xs w-24 focus:outline-none focus:border-[#26C4A2]"
                   value={textColor}
                   maxLength={7}
                   onChange={(e) => {
@@ -475,7 +469,7 @@ export default function Home() {
 
             {/* Car details */}
             <div className={card}>
-              <h2 className="text-base font-bold text-yellow-400 uppercase tracking-wider">
+              <h2 className="text-base font-bold text-[#26C4A2] uppercase tracking-wider">
                 Vehicle Details
               </h2>
               <div className="grid grid-cols-2 gap-3">
@@ -574,11 +568,11 @@ export default function Home() {
 
             {/* Photo upload */}
             <div className={card}>
-              <h2 className="text-base font-bold text-yellow-400 uppercase tracking-wider">
+              <h2 className="text-base font-bold text-[#26C4A2] uppercase tracking-wider">
                 Vehicle Photos
               </h2>
               <div
-                className="border-2 border-dashed border-zinc-700 rounded-xl p-8 text-center cursor-pointer hover:border-yellow-400 transition-colors"
+                className="border-2 border-dashed border-zinc-700 rounded-xl p-8 text-center cursor-pointer hover:border-[#26C4A2] transition-colors"
                 onDrop={(e) => { e.preventDefault(); handleFiles(activeIdx, e.dataTransfer.files); }}
                 onDragOver={(e) => e.preventDefault()}
                 onClick={() => fileRefs.current[activeIdx]?.click()}
@@ -590,7 +584,7 @@ export default function Home() {
                 />
                 <div className="text-4xl mb-2">📷</div>
                 <p className="text-zinc-400 text-sm">
-                  Drag & drop or <span className="text-yellow-400">click to browse</span>
+                  Drag & drop or <span className="text-[#26C4A2]">click to browse</span>
                 </p>
                 <p className="text-zinc-600 text-xs mt-1">3–6 photos recommended · Auto-fit to 9:16</p>
               </div>
@@ -629,7 +623,7 @@ export default function Home() {
             {/* Generated copy panel */}
             {activeCopy ? (
               <div className={card}>
-                <h2 className="text-base font-bold text-yellow-400 uppercase tracking-wider">
+                <h2 className="text-base font-bold text-[#26C4A2] uppercase tracking-wider">
                   Vehicle Copy
                   <span className="text-zinc-500 font-normal normal-case text-xs ml-2">(click to select)</span>
                 </h2>
@@ -646,7 +640,7 @@ export default function Home() {
                         onClick={() => updateCopy(activeIdx, { selectedHook: i })}
                         className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all ${
                           activeCopy.selectedHook === i
-                            ? 'border-yellow-400 bg-yellow-400/10 text-white'
+                            ? 'border-[#26C4A2] bg-[#26C4A2]/10 text-white'
                             : 'border-zinc-700 bg-zinc-800/60 text-zinc-300 hover:border-zinc-500 hover:text-white'
                         }`}
                       >
@@ -669,7 +663,7 @@ export default function Home() {
                         onClick={() => updateCopy(activeIdx, { selectedCta: i })}
                         className={`w-full text-left px-4 py-2.5 rounded-xl border text-sm transition-all ${
                           activeCopy.selectedCta === i
-                            ? 'border-yellow-400 bg-yellow-400/10 text-white'
+                            ? 'border-[#26C4A2] bg-[#26C4A2]/10 text-white'
                             : 'border-zinc-700 bg-zinc-800/60 text-zinc-300 hover:border-zinc-500 hover:text-white'
                         }`}
                       >
@@ -702,7 +696,7 @@ export default function Home() {
                               updated[i] = e.target.checked;
                               updateCopy(activeIdx, { activeFeatures: updated });
                             }}
-                            className="accent-yellow-400 w-4 h-4"
+                            className="accent-[#26C4A2] w-4 h-4"
                           />
                           <input
                             className="bg-transparent text-sm text-white flex-1 focus:outline-none placeholder-zinc-600"
@@ -790,14 +784,14 @@ export default function Home() {
               <div className={`${card} flex items-center justify-center min-h-48`}>
                 <p className="text-zinc-600 text-sm text-center">
                   Fill in the vehicle details and click<br />
-                  <span className="text-yellow-400">Generate Copy</span> to see AI options
+                  <span className="text-[#26C4A2]">Generate Copy</span> to see AI options
                 </p>
               </div>
             )}
 
             {/* Render panel */}
             <div className={card}>
-              <h2 className="text-base font-bold text-yellow-400 uppercase tracking-wider">Render Video</h2>
+              <h2 className="text-base font-bold text-[#26C4A2] uppercase tracking-wider">Render Video</h2>
 
               <p className="text-zinc-500 text-xs">
                 9:16 MP4 · 1080×1920 · Oswald + Inter · {PRESETS[selectedPresetId].name} preset ·{' '}
@@ -855,7 +849,7 @@ export default function Home() {
 
       {isRendering && (
         <div className="fixed bottom-6 right-6 bg-zinc-800 border border-zinc-700 rounded-xl px-5 py-3 flex items-center gap-3 shadow-xl">
-          <div className="w-4 h-4 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-[#26C4A2] border-t-transparent rounded-full animate-spin" />
           <span className="text-sm text-zinc-300">Rendering your reel… please wait</span>
         </div>
       )}
