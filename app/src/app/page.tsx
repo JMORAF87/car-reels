@@ -332,7 +332,7 @@ export default function Home() {
       {/* ── Header ── */}
       <header className="border-b border-zinc-800 px-6 py-4 flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/car-reels-logo-transp.png" alt="Car Reels" style={{ height: 38, width: 'auto' }} />
+        <img src="/brand/car-reels-logo-transp.png" alt="Car Reels" style={{ height: 52, width: 'auto' }} />
         <div className="text-zinc-500 text-sm flex-1">AI-powered dealership reels for TikTok & Instagram</div>
         <button
           onClick={handleLogout}
