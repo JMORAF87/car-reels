@@ -382,7 +382,7 @@ export default function Home() {
               <label className="text-xs text-zinc-400 mb-1 block">Dealership Name</label>
               <input
                 className={field}
-                placeholder="Mac Haik Auto Group"
+                placeholder="Best Auto Group"
                 value={dealership}
                 onChange={(e) => setDealership(e.target.value)}
               />
